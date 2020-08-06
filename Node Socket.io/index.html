@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body>
+    <fieldset id="chat">
+        <legend>Chat</legend>
+        <input type="text" id="name" placeholder="Enter Your Name"/>
+        <input type="button" value="Start Chat" onclick="setUsername()"/><br><br>
+        <div id="error-message"></div>
+    </fieldset><br><br>
+    <div>
+        Wait for 5 seconds<br><br><br>
+        <div id="msg">Send: </div><br><br>
+        <div id="test">UserDefined: </div><br><br>
+        All Broadcast:
+        <div id="broad"></div><br><br>
+        New/Old Broadcast:
+        <div id="obroad">This is a new client</div>        
+    </div>
+
+    <!-- from socket.io google cdn we import the following script -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script> -->
+    <script src = "/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        socket.on('message',function(data){
+            document.getElementById('msg').innerHTML+=data;
+        })
+
+        // userdefined event
+        socket.on('testEvent',function(data){
+            document.getElementById('test').innerHTML+=data;
+        })
+
+        // subscriber for the Broadcast for all clients
+        socket.on('broadcast',function(data){
+            document.getElementById('broad').innerHTML=data.message;
+        })
+        // broadcasting type 2 and 3
+        socket.on('newClientConnected',function(data){
+            document.getElementById('obroad').innerHTML=data.message;
+        });
+    </script>
+    
+    <script id="chat">
+        function setUsername(){
+            socket.emit('setUsername',document.getElementById('name').value);
+        }
+
+        var user;
+        socket.on("userAlreadyExist",function(data){
+            document.getElementById('error-message').innerHTML= data;
+        })
+        socket.on('newUserSet',function(data){
+            user = data.username;
+            document.getElementById('chat').innerHTML=
+            "<legend>"+user+"</legend><input type='text' id='message'/>\
+            <input type='button' value='Send Broadcast' onclick='sendMessage()'/><br>\
+            <div id='user-message'></div>";
+        })
+
+        function sendMessage(){
+            var msg = document.getElementById('message').value;
+            if(msg){
+                socket.emit('msg',{message:msg, user: user});
+            }
+        }
+
+        socket.on('NewMessage',function(data){
+            if(user){
+                document.getElementById('user-message').innerHTML+= 
+                "<div><b>"+ data.user+"</b>:" + data.message + '</div>';
+            }
+        })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+to test files put them in test folder and 
+in terminal run mocha
+test is the default folder for mocha 
+it will test all files in test folder
+
+to run other than test folder 
+run in terminal mocha ./name/

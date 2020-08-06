@@ -1,0 +1,31 @@
+added window.addEventListener under export function register
+in file serviceWorker.js under src folder
+
+export function register(config) {
+    window.addEventListener('fetch',(event)=>{
+      if(event.request.url.match('^.(\/api\/).$')){
+        return false;
+      }
+    })
+  }
+}
+
+created files :-
+index.js
+
+made folders :-
+bin
+config
+models
+routes
+src/components
+
+edited files :-
+src/App.js
+src/index.js
+src/serviceWorker.js
+package.json
+
+// https://www.sohamkamani.com/blog/javascript/2019-03-29-node-jwt-authentication/
+// https://levelup.gitconnected.com/everything-you-need-to-know-about-the-passport-local-passport-js-strategy-633bbab6195
+// https://medium.com/swlh/everything-you-need-to-know-about-the-passport-jwt-passport-js-strategy-8b69f39014b0
